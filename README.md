@@ -1,5 +1,4 @@
 ## Tâches à Réaliser
-
 Ce dépôt contient des exercices pour se familiariser avec MongoDB. Vous pouvez travailler localement ou dans Codespace pour compléter les différents fichiers.
 
 ### Livrables
