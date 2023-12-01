@@ -51,34 +51,35 @@ Ci-dessous, vous pouvez consulter la base de données d'un service de livraison 
 
 - Écrivez une requête pour récupérer tous les utilisateurs de la collection "utilisateurs".
 
-`Votre réponse..`
+`db.utilisateur.find()`
 
 - Écrivez une requête pour récupérer toutes les commandes datées du 16 janvier 2023. À grande echelle, cette requête est-elle efficace ? Pourquoi ?
 
-`Votre réponse..`
+`db.commande.find({"date_cmd": /2023-01-16/})`
+Non ça ne serait pas efficace car ce n'est pas indexé, et peu optimisé
 
 #### Mise à jour de données
 
 - Modifiez le document d'un utilisateur pour mettre à jour son adresse e-mail (choisissez une nouvelle adresse mail).
-- Modifiez le document du restaurand Sushi Express pour ajouter un champ "fermeture" avec la date du "01/12/2023". Une opération pareille aurait-elle été possible en SQL ?
+'db.utilisateur.updateOne({UserID: 1}, {$set:{mail:'dupont.jean@email.com'}})'
 
-`Votre réponse..`
+- Modifiez le document du restaurand Sushi Express pour ajouter un champ "fermeture" avec la date du "01/12/2023". Une opération pareille aurait-elle été possible en SQL ?
+'db.restaurant.updateOne({RestaurantID:102}, {$set:{closure:'2021-12-01'}})'
 
 - Supprimez le restaurant Sushi-express. Remarquez-vous une incohérence dans l'ensemble de base de donnée ?
-
-`Votre réponse..`
+`db.restaurant.deleteOne({RestaurantID:102})`
+Les autres collections ayant référence au restaurant supprimé, gardent le restaurant sur leurs propriétés même s'il n'existe plus
 
 #### Agrégation de données
 Ressource utile : https://www.mongodb.com/docs/manual/core/map-reduce/ https://www.youtube.com/watch?v=cHGaQz0E7AU https://www.youtube.com/watch?v=fEACZP_878Y
 - Utilisez l'agrégation pour trouver la moyenne des prix des produits.
  
-`Votre réponse..`
+` db.produit.aggregate([{$group: {_id: null, avgprice: {$avg: "$price"}}}, {$project: {_id: 0, avgprice: 1}}])`
 
 - Utilisez l'agrégation pour regrouper les utilisateurs par adresse et compter combien d'utilisateurs ont la même adresse.
  
-`Votre réponse..`
+`db.utilisateur.aggregate([{$group: {_id: '$address', commonuser: {$sum: 1}}}])`
 
 - En considérant le fait que MongoDB dispatch ses données sur plusieurs serveurs, en quoi cette méthode "d'agrégation" permet à MongoDB de travailler efficacement ?
 
-`Votre réponse..`
-
+`Dispatcher sur plusieurs serveurs permettra probablement que chaque catégorie à analyser se sépare de manière équilibrée sur chaque serveur, donc optimisera au maximum pour que le temps de calcul soit minimal`
